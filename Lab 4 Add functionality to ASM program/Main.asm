@@ -9,8 +9,6 @@ ExitProcess proto, dwExitCode:DWORD
 Sleep proto, dwMilliseconds:DWORD
 GetModuleHandleA proto, lpModuleName:DWORD ; get a handle to the .exe file that executes the process
 
-; akicha
-
 .data
 	note db 'Note',0
 	noteClassName db 'NOTECLASS',0
@@ -49,9 +47,9 @@ GetModuleHandleA proto, lpModuleName:DWORD ; get a handle to the .exe file that 
 		push offset saveFileName
 		; 28 bytes total
 
-		call CreateFile
+		call CreateFile ; eax register now contains the address memory to the handle to the file
 
-		; eax register now contains the address memory to the handle to the file
+		add esp, 28 ; clean 28 bytes of arguments for CreateFile procedure
 
 		; save the contents to the file
 		; arguments for the WriteFile procedure
@@ -61,7 +59,7 @@ GetModuleHandleA proto, lpModuleName:DWORD ; get a handle to the .exe file that 
 		push offset editMessage ; address memory where the buffer is stored
 		push eax ; file handle
 
-		add esp, 28 ; clean 28 bytes of arguments for CreateFile procedure
+		call WriteFile
 
 		push 600000 ; ms in 10 minutes
 		call Sleep
